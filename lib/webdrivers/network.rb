@@ -55,8 +55,10 @@ module Webdrivers
 
       def http_get_response(uri)
         http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = uri.scheme == 'https'
-        http.ssl_version = :TLSv1_2
+        if uri.scheme == 'https'
+          http.use_ssl = true
+          http.ssl_version = :TLSv1_2
+        end
         request = Net::HTTP::Get.new uri
         http.request(request)
       end
