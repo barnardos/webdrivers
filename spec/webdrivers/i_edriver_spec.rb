@@ -23,7 +23,7 @@ describe Webdrivers::IEdriver do
 
       it 'does not download when offline, but binary exists' do
         allow(Webdrivers::System).to receive(:call).and_return('something IEDriverServer.exe 3.5.1 something else')
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(iedriver).to receive(:exists?).and_return(true)
 
         iedriver.update
@@ -32,7 +32,7 @@ describe Webdrivers::IEdriver do
       end
 
       it 'raises ConnectionError when offline, and no binary exists' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(iedriver).to receive(:exists?).and_return(false)
 
         expect { iedriver.update }.to raise_error(Webdrivers::ConnectionError)
@@ -49,7 +49,7 @@ describe Webdrivers::IEdriver do
       end
 
       it 'does not raise exception if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         iedriver.update
 
@@ -67,7 +67,7 @@ describe Webdrivers::IEdriver do
       end
 
       it 'raises ConnectionError if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         msg = %r{Can not reach https://selenium-release.storage.googleapis.com/}
         expect { iedriver.update }.to raise_error(Webdrivers::ConnectionError, msg)

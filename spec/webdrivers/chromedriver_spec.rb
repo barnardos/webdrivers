@@ -19,7 +19,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'does not download when offline, binary exists and is less than v70' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(chromedriver).to receive(:exists?).and_return(true)
         allow(chromedriver).to receive(:current_version).and_return(Gem::Version.new(69))
 
@@ -29,7 +29,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'does not download when offline, binary exists and matches major browser version' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(chromedriver).to receive(:exists?).and_return(true)
         allow(chromedriver).to receive(:chrome_version).and_return(Gem::Version.new('73.0.3683.68'))
         allow(chromedriver).to receive(:current_version).and_return(Gem::Version.new('73.0.3683.20'))
@@ -53,7 +53,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'raises ConnectionError when offline, and binary does not match major browser version' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(chromedriver).to receive(:exists?).and_return(true)
         allow(chromedriver).to receive(:chrome_version).and_return(Gem::Version.new('73.0.3683.68'))
         allow(chromedriver).to receive(:current_version).and_return(Gem::Version.new('72.0.0.0'))
@@ -63,7 +63,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'raises ConnectionError when offline, and no binary exists' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(chromedriver).to receive(:exists?).and_return(false)
 
         msg = %r{Can not reach https://chromedriver.storage.googleapis.com}
@@ -81,7 +81,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'does not raise exception if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         chromedriver.update
 
@@ -99,7 +99,7 @@ describe Webdrivers::Chromedriver do
       end
 
       it 'raises ConnectionError if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         msg = %r{Can not reach https://chromedriver.storage.googleapis.com/}
         expect { chromedriver.update }.to raise_error(Webdrivers::ConnectionError, msg)
@@ -186,7 +186,7 @@ describe Webdrivers::Chromedriver do
     end
 
     it 'raises ConnectionError when offline' do
-      allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+      allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
       msg = %r{^Can not reach https://chromedriver.storage.googleapis.com}
       expect { chromedriver.latest_version }.to raise_error(Webdrivers::ConnectionError, msg)

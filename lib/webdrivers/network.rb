@@ -28,7 +28,7 @@ module Webdrivers
         raise ConnectionError, 'Too many HTTP redirects' if limit.zero?
 
         begin
-          response = http.get_response(URI(url))
+          response = http_get_response(URI(url))
         rescue SocketError
           raise ConnectionError, "Can not reach #{url}"
         end
@@ -51,6 +51,14 @@ module Webdrivers
         else
           Net::HTTP
         end
+      end
+
+      def http_get_response(uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = uri.scheme == 'https'
+        http.ssl_version = :TLSv1_2
+        request = Net::HTTP::Get.new uri
+        http.request(request)
       end
 
       def using_proxy

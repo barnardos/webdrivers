@@ -23,7 +23,7 @@ describe Webdrivers::Geckodriver do
 
       it 'does not download when offline, but binary exists' do
         allow(Webdrivers::System).to receive(:call).and_return('geckodriver 0.24.0 ( 2019-01-28)')
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(geckodriver).to receive(:exists?).and_return(true)
 
         geckodriver.update
@@ -32,7 +32,7 @@ describe Webdrivers::Geckodriver do
       end
 
       it 'raises ConnectionError when offline, and no binary exists' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
         allow(geckodriver).to receive(:exists?).and_return(false)
 
         expect { geckodriver.update }.to raise_error(Webdrivers::ConnectionError)
@@ -49,7 +49,7 @@ describe Webdrivers::Geckodriver do
       end
 
       it 'does not raise exception if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         geckodriver.update
 
@@ -67,7 +67,7 @@ describe Webdrivers::Geckodriver do
       end
 
       it 'raises ConnectionError if offline' do
-        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError)
+        allow(Webdrivers::Network).to receive(:http_get_response).and_raise(SocketError)
 
         msg = %r{Can not reach https://github.com/mozilla/geckodriver/releases}
         expect { geckodriver.update }.to raise_error(Webdrivers::ConnectionError, msg)
